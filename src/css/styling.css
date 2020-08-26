@@ -1,0 +1,398 @@
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.canvas,
+.exampleImage {
+  height: 200px;
+}
+
+.exampleWrapper,
+.optionsWrapper,
+.recrop,
+.file {
+  display: none;
+}
+
+.exampleWrapper.is-visible {
+  display: contents;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #FDF5F5;
+  padding: 5px 24px 15px;
+  flex: 3;
+}
+
+.dropWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 4px solid #FDF5F5;
+  padding: 15px;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.githubLink>.fa-github {
+  position: absolute;
+  right: 0;
+  top: 20px;
+  font-size: 1.5rem;
+  color: #2B7A78;
+}
+
+.brandWrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.brand {
+  height: 120px;
+}
+
+.descriptionWrapper>div {
+  font-family: 'Satisfy';
+  display: inline-block;
+  font-size: 2rem;
+  font-weight: normal;
+  color: #0B0C10;
+}
+
+.descriptionWrapper {
+  text-align: center;
+  margin: 0;
+  padding-top: 15px;
+}
+
+.headshots {
+  background: -webkit-linear-gradient(#2B7A78, #25D6D6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-left: 2px;
+}
+
+.uploadAndSettingsWrapper>div {
+  font-size: 0.9rem;
+  font-family: sans-serif;
+  display: flex;
+}
+
+.uploadButton,
+.settingsButton {
+  color: #2B7A78;
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  padding-left: 0;
+}
+
+.uploadButtonText,
+.settingsButtonText,
+.placeholderText {
+  display: inline-block;
+}
+
+.fa-file-upload,
+.fa-cog {
+  margin-left: 5px;
+  font-size: 0.75rem;
+}
+
+.disclaimer,
+.loadingWrapper {
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 1rem;
+  padding-top: 15px;
+  color: #0B0C10;
+}
+
+.optionsWrapper.is-visible {
+  flex-wrap: wrap;
+  background-color: #E2F4F3;
+  padding: 15px 24px;
+  justify-content: space-between;
+  flex: 0.5;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.sizeWrapper,
+.optionsWrapper.is-visible,
+.downloadWrapper,
+.bestEffortWrapper,
+.heightWrapper,
+.aiWrapper,
+.recrop.is-visible {
+  display: flex;
+  font-family: sans-serif;
+  font-size: 0.8rem;
+  color: #2B7A78;
+  align-items: center;
+}
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltipText {
+  visibility: hidden;
+  width: 150px;
+  background-color: #2B7A78;
+  color: #E2F4F3;
+  font-size: 0.75rem;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltipText::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #2B7A78 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltipText {
+  visibility: visible;
+  opacity: 1;
+}
+
+.aiTooltip {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.questionmark {
+  background-color: #FDF5F5;
+  border-radius: 50%;
+  border: 1px dotted #2B7A78;
+  padding-right: 3px;
+  padding-left: 3px;
+}
+
+.recrop.is-visible {
+  background-color: #FDF5F5;
+  border: 1px solid #2B7A78;
+}
+
+.sizeInput {
+  width: 40px;
+}
+
+.fa-circle {
+  font-size: 0.4rem;
+}
+
+.sizeText,
+.heightText,
+.bestEffortCheck,
+.downloadCheck {
+  padding-right: 10px;
+}
+
+.placeholderWrapper {
+  color: #2B7A78;
+  font-family: sans-serif;
+  font-size: 1rem;
+  height: 40px;
+}
+
+.fa-spinner {
+  display: block;
+}
+
+.footer {
+  padding: 0px 24px;
+  background-color: #FDF5F5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footerBG {
+  height: 6%;
+  background-color: #2B7A78;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+}
+
+.footerContainer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  font-family: sans-serif;
+  font-size: 1rem;
+  align-items: center;
+  color: #FDF5F5;
+}
+
+.creatorName {
+  font-weight: bold;
+  padding-right: 20px;
+}
+
+.creatorImage {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  border: 2px solid #FDF5F5;
+  margin-right: 12px;
+}
+
+.creator,
+.uploadAndSettingsWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.social {
+  text-decoration: none;
+}
+
+.creatorText {
+  display: flex;
+  padding-right: 12px;
+}
+
+.visitWrapper,
+.creatorWrapper,
+.titleWrapper {
+  display: flex;
+}
+
+.poloClubWrapper {
+  display: flex;
+  opacity: 0.8;
+}
+
+.fa-home,
+.fa-linkedin,
+.fa-github {
+  color: #FDF5F5;
+  padding-right: 5px;
+  padding-left: 5px;
+  font-size: 1rem;
+}
+
+.social.github {
+  padding-right: 20px;
+}
+
+.photoAttributions {
+  display: flex;
+  padding-right: 24px;
+  padding-left: 24px;
+  justify-content: space-between;
+  color: #686868;
+  font-family: sans-serif;
+  background-color: #FDF5F5;
+  font-size: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.attribution {
+  text-decoration: none;
+  color: #686868;
+  padding-top: 5px;
+  padding-bottom: 3px;
+}
+
+.overlay {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #DEF2F1;
+  opacity: 1%;
+  z-index: 2;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlayContent {
+  font-family: sans-serif;
+  color: #0B0C10;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.statusWrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.advancedWrapper {
+  padding-left: 5px;
+}
+
+.advancedButton {
+  border: none;
+  background: none;
+  color: #2B7A78;
+  font-family: sans-serif;
+  font-size: 1rem;
+  text-decoration: underline;
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (max-width: 600px) {
+  .brand {
+    height: 75px;
+  }
+
+  .exampleImage {
+    height: 100px;
+  }
+
+  .footerBG {
+    height: 18%;
+  }
+
+  .footerContainer {
+    flex-wrap: wrap;
+  }
+
+  .photoAttributions {
+    flex-wrap: wrap;
+    padding-top: 15px;
+  }
+}

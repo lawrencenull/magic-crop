@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Magic Crop | An Automatic Headshot Cropper</title>
+  <meta name="description" content="A website that uses AI and the rule of thirds to automatically crop inputted
+  pictures into square headshots without sending images to any server.">
+  <meta name="og:title" property="og:title" content="Magic Crop | Automatic Headshot Cropper">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://poloclub.github.io/magic-crop/" />
+  <meta property="og:image" content="https://poloclub.github.io/magic-crop/assets/example.png" />
+  <meta property="og:site_name" content="Magic Crop" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://poloclub.github.io/magic-crop/" />
+  <script src="./src/scripts/face-api.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="./src/css/styling.css">
+  <script src="https://kit.fontawesome.com/0db58c661b.js" crossorigin="anonymous"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-174923824-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-174923824-1');
+  </script>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="contentWrapper">
+      <div class="header">
+        <div class="brandWrapper">
+          <img class="brand" src="./assets/brand.png" alt="Magic Crop">
+        </div>
+        <a class="githubLink" href="https://github.com/poloclub/magic-crop">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+      <div class="statusWrapper">
+        <div class="placeholderWrapper">
+          <i class="fas fa-spinner fa-pulse" id="js-spinner" style="display: none"></i>
+          <i class="fa fa-exclamation-triangle" id="js-warning" aria-hidden="true" style="display: none"></i>
+          <div class="placeholderText" id="js-placeholder">
+          </div>
+          <i class="fas fa-grin-hearts" id="js-heart-eyes" style="display: none"></i>
+        </div>
+        <div class="advancedWrapper" id="js-advanced" style="display: none">
+          <button class="advancedButton" id="js-advanced-button">
+            Try again using a more powerful AI
+          </button>
+        </div>
+      </div>
+      <div class="dropWrapper" id="js-drop-wrapper">
+        <canvas class="canvas" id="js-canvas" width="300" height="300" style="display: none"></canvas>
+        <img class="image" id="js-pic-output" style="display:none" alt="input image">
+        <div class="exampleWrapper is-visible" id="js-examples">
+          <img class="exampleImage" src="./assets/example.png" alt="Example Cropping Graphic">
+        </div>
+        <h2 class="descriptionWrapper">
+          <div class="description-1">
+            Drop your photo(s) here. And it'll be cropped for
+          </div>
+          <div class="headshots">
+            headshots!
+          </div>
+        </h2>
+      </div>
+      <div class="uploadAndSettingsWrapper">
+        <div class="uploadWrapper">
+          <div class="upload-1">
+            or...
+          </div>
+          <button class="uploadButton" id="js-upload-button">
+            <i class="fas fa-file-upload"></i>
+            <div class="uploadButtonText">
+              upload file(s)
+            </div>
+          </button>
+        </div>
+        <div class="settingsWrapper">
+          <div class="settings-1">
+            and
+          </div>
+          <button class="settingsButton" id="js-settings-button">
+            <i class="fas fa-cog"></i>
+            <div class="settingsButtonText" id="js-settings-button-text">
+              change settings
+            </div>
+          </button>
+        </div>
+      </div>
+      <div class="optionsWrapper" id="js-options">
+        <div class="downloadWrapper">
+          <input type="checkbox" id="js-download" name="download" value="download" class="downloadCheck" checked>
+          <label for="download">Autodownload&nbsp</label>
+          <div class="tooltip">
+            <div class="questionmark">
+              ?
+            </div>
+            <span class="tooltipText">If checked, after the image is done being cropped, the
+              file will be automatically downloaded into the "downloads" folder of
+              your device. For multiple files, this must be checked.
+            </span>
+          </div>
+        </div>
+        <div class="bestEffortWrapper">
+          <input type="checkbox" id="js-best-effort" name="best-effort" value="best-effort" class="bestEffortCheck" checked>
+          <label for="best-effort">Best effort crop&nbsp</label>
+          <div class="tooltip">
+            <div class="questionmark">
+              ?
+            </div>
+            <span class="tooltipText">If the picture you chose is too narrow for
+              the selected proportion of the height of the face to the height of
+              the entire picture, then your picture will be cropped to the size
+              chosen and the proportion of face height will be as small as
+              possible.</span>
+          </div>
+        </div>
+        <div class="sizeWrapper">
+          <div class="sizeText">
+            Cropped square photo size (pixels):
+          </div>
+          <input class="sizeInput" type="text" value="200" id="js-size">
+        </div>
+        <div class="aiWrapper">
+          <div class="aiText">
+            AI Type:
+          </div>
+          <div class="tooltip aiTooltip">
+            <div class="questionmark">
+              ?
+            </div>
+            <span class="tooltipText">
+              By default, if you input 1 picture, we use
+              a "Fast AI", but if you insert more than 1 picture, we use a
+              "Powerful AI" which does a better job at recognizing faces, but
+              takes a longer time to complete. By changing the dropdown value,
+              we'll use that AI regardless of how many pictures are inputted.
+            </span>
+          </div>
+          <select id="js-ai-dropdown">
+            <option value="default" selected>Default AI</option>
+            <option value="fast">Fast AI</option>
+            <option value="powerful">Powerful AI</option>
+          </select>
+        </div>
+        <div class="heightWrapper">
+          <div class="heightText">
+            Proportion of face to height of entire picture:
+          </div>
+          <select id="js-height-dropdown">
+            <option value="0.33">1/3</option>
+            <option value="0.5" selected>1/2</option>
+            <option value="0.66">2/3</option>
+            <option value="0.75">3/4</option>
+          </select>
+        </div>
+        <button class="recrop" type="button" id="js-recrop-button">Re-crop</button>
+      </div>
+      <div class="loadingWrapper" id="js-loading">
+        <div class="loadingText">
+          Loading models...please wait
+          <i class="overlaySpinner fas fa-spinner fa-pulse" id="js-spinner"></i>
+        </div>
+      </div>
+      <div class="disclaimer" id="js-disclaimer" style="display: none">
+        All the magic happens on your device and is free! Images are never sent to any server.
+      </div>
+    </div>
+    <input class="file" type="file" id="js-file" multiple>
+    <div class="footer">
+      <div class="footerBG"></div>
+      <div class="footerContainer">
+        <div class="creator">
+          <div class="creatorText">
+            Created by
+          </div>
+          <img class="creatorImage" src="./assets/megan.jpg" alt="Picture of Megan Dass">
+          <div class="creatorName">
+            Megan Dass
+          </div>
+        </div>
+        <div class="visitLinks">
+          <a class="social personalWebsite" href="http://megandass.me/">
+            <i class="fas fa-home"></i>
+          </a>
+          <a class="social linkedin" href="https://www.linkedin.com/in/megan-dass">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a class="social github" href="https://github.com/MDass">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="poloClubWrapper">
+          <div class="poloClubText">
+            advised by Dr. Polo Chau at Polo Club of Data Science
+          </div>
+          <a class="poloClubSite" href="https://poloclub.github.io/">
+            <i class="fas fa-home"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="photoAttributions">
+      <a class="attribution" href="https://www.freepik.com/vectors/people">
+        People vector created by freepik - www.freepik.com
+      </a>
+      <div class="divider">
+        |
+      </div>
+      <a class="attribution" href="https://www.freepik.com/vectors/infographic">
+        Infographic vector created by freepik - www.freepik.com
+      </a>
+      <div class="divider">
+        |
+      </div>
+      <a class="attribution" href="https://www.freepik.com/vectors/background">
+        Background vector created by eightonesix - www.freepik.com
+      </a>
+    </div>
+  </div>
+  <div class="overlay" id="js-overlay">
+  </div>
+  <script type="text/javascript" src="./src/scripts/script.js"></script>
+</body>
