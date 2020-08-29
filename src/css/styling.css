@@ -316,20 +316,24 @@ body, html {
   display: flex;
   padding-right: 24px;
   padding-left: 24px;
-  justify-content: space-between;
-  color: #686868;
+  justify-content: center;
+  color: #999;
   font-family: sans-serif;
   background-color: #FDF5F5;
   font-size: 0.75rem;
-  align-items: center;
+  align-items:center;
   flex-wrap: wrap;
 }
 
-.attribution {
+.photoAttributions .attribution {
   text-decoration: none;
-  color: #686868;
+  color: #999;
   padding-top: 5px;
   padding-bottom: 3px;
+}
+
+.photoAttributions .divider {
+  padding: 0px 5px;
 }
 
 .overlay {
