@@ -1,6 +1,6 @@
 # Magic Crop
 
-A website that uses AI and the rule of thirds to automatically crop inputted pictures into square headshots without sending images to any server.
+A website that uses AI and the rule of thirds to automatically crop inputted pictures into perfect square headshots without sending images to any server. It can even batch-crop multiple images!
 
 [![Build Status](https://travis-ci.com/poloclub/magic-crop.svg?branch=master)](https://travis-ci.com/poloclub/magic-crop)
 
@@ -14,7 +14,7 @@ A website that uses AI and the rule of thirds to automatically crop inputted pic
 
 ### Input Files
 
-Drag and drop images from your machine onto the page. 
+Drag and drop your image from your machine onto the page. Magic Crop supports batch cropping multiple images, so go ahead and drag multiple images in, and save tons of time!
 
 ![Drag and drop region](demo_and_images/drag_drop_region.JPG)
 
