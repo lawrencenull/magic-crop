@@ -132,7 +132,7 @@ body, html {
   background-color: #E2F4F3;
   padding: 15px 24px;
   justify-content: space-between;
-  flex: 0.5;
+  flex: 0.25;
   margin-top: 15px;
   width: 100%;
 }
@@ -235,18 +235,10 @@ body, html {
 
 .footer {
   padding: 0px 24px;
-  background-color: #FDF5F5;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.footerBG {
-  height: 6%;
   background-color: #2B7A78;
-  position: absolute;
-  z-index: 1;
-  width: 100%;
 }
 
 .footerContainer {
@@ -314,7 +306,7 @@ body, html {
 
 .photoAttributions {
   display: flex;
-  padding-right: 24px;
+  padding: 15px 24px;
   padding-left: 24px;
   justify-content: center;
   color: #999;

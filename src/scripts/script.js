@@ -33,8 +33,8 @@ window.onload = async function() {
   var allFiles = [globalFile];
   var sameImageCount = 0;
 
-  const constantCanvasHeight = 200; //same as value in index.html
-  const constantCanvasWidth = 200; //same as value in index.html
+  const constantCanvasHeight = exampleImages.style.height; //same as the height of the example image
+  const constantCanvasWidth = constantCanvasHeight; //canvas is square
   const topAddition = 10; //makes the eyes 10 pixels below the first third line
   const delayTime = 3000; //after each file is done, wait a few seconds
   const delay = ms => new Promise(res => setTimeout(res, ms));
