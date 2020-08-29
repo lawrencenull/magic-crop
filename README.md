@@ -22,6 +22,9 @@ Alternatively, you can use the "upload file(s)" button to browse the file explor
 
 ![Upload files button](demo_and_images/upload_files_button.JPG)
 
+#### Where Does The Magic Come from?
+Magic Crop detects your face using [face-api.js](https://github.com/justadudewhohacks/face-api.js/), then resizes and crops your photo, so your eye is placed roughly at 1/3 of the image height, and your face is roughly 1/2 of image height.
+
 ### Modify Settings
 
 Click the "change settings" icon to open the settings menu. Here, you can change the following options:
