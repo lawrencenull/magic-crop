@@ -1,6 +1,6 @@
 # Magic Crop
 
-A website that uses AI and the rule of thirds to automatically crop inputted pictures into perfect square headshots without sending images to any server. It can even batch-crop multiple images!
+A free online tool that uses AI and the rule of thirds to automatically crop input photos into square headshots at a smart ratio without sending images to any server, perfect for social media profiles like Linkedin and Twitter that need tight crop. It can even batch-crop multiple images!
 
 [![Build Status](https://travis-ci.com/poloclub/magic-crop.svg?branch=master)](https://travis-ci.com/poloclub/magic-crop)
 
