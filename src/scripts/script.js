@@ -12,6 +12,7 @@ window.onload = async function() {
   const dropWrapper = document.getElementById("js-drop-wrapper");
   const placeholderText = document.getElementById("js-placeholder");
   const exampleImages = document.getElementById("js-examples");
+  const exampleImagesWrapper = document.getElementById("js-examples-wrapper");
   const recropButton = document.getElementById("js-recrop-button");
   const settingsButton = document.getElementById("js-settings-button");
   const settingsButtonText = document.getElementById("js-settings-button-text");
@@ -33,7 +34,7 @@ window.onload = async function() {
   var allFiles = [globalFile];
   var sameImageCount = 0;
 
-  const constantCanvasHeight = exampleImages.style.height; //same as the height of the example image
+  const constantCanvasHeight = exampleImages.height; //same as the height of the example image
   const constantCanvasWidth = constantCanvasHeight; //canvas is square
   const topAddition = 10; //makes the eyes 10 pixels below the first third line
   const delayTime = 3000; //after each file is done, wait a few seconds
@@ -72,14 +73,14 @@ window.onload = async function() {
     }
   }
 
-  input.onchange = function() {
+  input.onchange = async function() {
     if (recropButton.classList[1] == "is-visible") {
       recropButton.classList.remove("is-visible");
     }
     if (input.files) {
       allFiles = input.files;
       counter = 0;
-      callback();
+      await callback();
     }
   }
 
@@ -96,7 +97,7 @@ window.onload = async function() {
     }
     allFiles = e.dataTransfer.files;
     counter = 0;
-    callback();
+    await callback();
   }
 
   async function callback() {
@@ -163,8 +164,8 @@ window.onload = async function() {
         canvas.height = img.height * (factor);
         let width = img.width;
         let height = img.height;
-        if (exampleImages.classList[1] == "is-visible") {
-          exampleImages.classList.remove("is-visible");
+        if (exampleImagesWrapper.classList[1] == "is-visible") {
+          exampleImagesWrapper.classList.remove("is-visible");
         }
         ctx.drawImage(img, startX, startY, width, height, 0, 0, canvas.width, canvas.height);
       };
@@ -190,111 +191,108 @@ window.onload = async function() {
       }
     }
 
-    var detections;
-    if (aiTypeParam == "powerful") {
-      console.log("powerful")
-      await faceapi.loadSsdMobilenetv1Model(MODEL_URL);
-      await faceapi.loadFaceLandmarkModel(MODEL_URL);
-
-      detections = await faceapi.detectAllFaces(image).withFaceLandmarks();
-    } else {
-      console.log("fast")
-      await faceapi.loadTinyFaceDetectorModel(MODEL_URL);
-      await faceapi.loadFaceLandmarkTinyModel(MODEL_URL);
-
-      detections = await faceapi.detectAllFaces(image, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(true);
-    }
+    var detections = await getDetections(aiTypeParam);
 
     if (type == "begin") {
       return;
     }
 
-    if (detections[0]) {
-      let leftEye = detections[0].landmarks.getLeftEye();
-      let rightEye = detections[0].landmarks.getRightEye();
-      let centerOfEyesX = (rightEye[0]._x + leftEye[3]._x) / 2;
-      let centerOfEyesY = (rightEye[0]._y + leftEye[3]._y) / 2;
-      let faceFraction = parseFloat(heightDropdown.value);
-      let faceHeight = detections[0].alignedRect._box._height;
-      let cropHeight = 1 / (faceFraction) * faceHeight;
-      let cropWidth = cropHeight;
-
-      canvas.width = cropSize.value;
-      canvas.height = cropSize.value;
-      let startX = centerOfEyesX - cropWidth / 2;
-      let startY = centerOfEyesY - cropHeight / 3 - topAddition;
-
-      if (startX < 0) {
-        startX = 0;
-      }
-      if (startY < 0) {
-        startY = 0;
-      }
-
-      if (startX > detections[0].alignedRect._box._x) {
-        startX = detections[0].alignedRect._box._x;
-      }
-      if (startY > detections[0].alignedRect._box._y) {
-        startY = detections[0].alignedRect._box._y;
-      }
-
-      if (cropHeight > image.height || cropWidth > image.width || cropHeight + startY > image.height || cropWidth + startX > image.width) {
-        if (bestEffortCheck.checked) {
-          while (cropHeight > image.height || cropWidth > image.width || cropHeight + startY > image.height || cropWidth + startX > image.width) {
-            faceFraction += 0.01;
-            faceHeight = detections[0].alignedRect._box._height;
-            cropHeight = 1 / (faceFraction) * faceHeight;
-            cropWidth = cropHeight;
-            startX = centerOfEyesX - cropWidth / 2;
-            startY = centerOfEyesY - cropHeight / 3 - topAddition;
-
-            if (startX < 0) {
-              startX = 0;
-            }
-            if (startY < 0) {
-              startY = 0;
-            }
-
-            if (startX > detections[0].alignedRect._box._x) {
-              startX = detections[0].alignedRect._box._x;
-            }
-            if (startY > detections[0].alignedRect._box._y) {
-              startY = detections[0].alignedRect._box._y;
-            }
-          }
-          await showCroppedPicture(centerOfEyesX, centerOfEyesY, cropWidth, cropHeight, detections, startX, startY);
-          placeholderText.innerHTML = "Best effort crop was used! Face-to-picture ratio used: " + faceFraction.toFixed(2) + ".";
-          warningSymbol.style.display = "none";
-          heartEyesSymbol.style.display = "";
-          spinnerSymbol.style.display = "none";
-          if (allFiles.length > 1) {
-            placeholderText.innerHTML += " (" + counter + "/" + allFiles.length + ")";
-          }
-        } else {
-          placeholderText.innerHTML = "The face-to-picture ratio of the original picture is greater than ratio selected! Please choose another picture, increase face-to-picture ratio, or select best effort crop.";
-          warningSymbol.style.display = "";
-          heartEyesSymbol.style.display = "none";
-          spinnerSymbol.style.display = "none";
-          if (allFiles.length > 1) {
-            placeholderText.innerHTML += " (" + counter + "/" + allFiles.length + ")";
-          }
-          recropButton.classList.add("is-visible");
-        }
-      } else {
-        await showCroppedPicture(centerOfEyesX, centerOfEyesY, cropWidth, cropHeight, detections, startX, startY);
-      }
-    } else {
-      placeholderText.innerHTML = "No face detected.";
-      if (sameImageCount == 0)
-        advancedWrapper.style.display = "inline-block";
-      else
-        placeholderText.innerHTML += " Please choose another picture."
+    if (detections.length > 1) {
+      placeholderText.innerHTML = "Sorry! Magic Crop is designed to crop a photo for an individual. Please choose another photo!";
       warningSymbol.style.display = "";
       heartEyesSymbol.style.display = "none";
       spinnerSymbol.style.display = "none";
-      if (allFiles.length > 1) {
-        placeholderText.innerHTML += " (" + counter + "/" + allFiles.length + ")";
+    } else {
+      if (detections[0]) {
+        let leftEye = detections[0].landmarks.getLeftEye();
+        let rightEye = detections[0].landmarks.getRightEye();
+        let centerOfEyesX = (rightEye[0]._x + leftEye[3]._x) / 2;
+        let centerOfEyesY = (rightEye[0]._y + leftEye[3]._y) / 2;
+        let faceFraction = parseFloat(heightDropdown.value);
+        let faceHeight = detections[0].alignedRect._box._height;
+        let cropHeight = 1 / (faceFraction) * faceHeight;
+        let cropWidth = cropHeight;
+
+        canvas.width = cropSize.value;
+        canvas.height = cropSize.value;
+        let startX = centerOfEyesX - cropWidth / 2;
+        let startY = centerOfEyesY - cropHeight / 3 - topAddition;
+
+        if (startX < 0) {
+          startX = 0;
+        }
+        if (startY < 0) {
+          startY = 0;
+        }
+
+        if (startX > detections[0].alignedRect._box._x) {
+          startX = detections[0].alignedRect._box._x;
+        }
+        if (startY > detections[0].alignedRect._box._y) {
+          startY = detections[0].alignedRect._box._y;
+        }
+
+        if (cropHeight > image.height || cropWidth > image.width || cropHeight + startY > image.height || cropWidth + startX > image.width) {
+          if (bestEffortCheck.checked) {
+            while (cropHeight > image.height || cropWidth > image.width || cropHeight + startY > image.height || cropWidth + startX > image.width) {
+              faceFraction += 0.01;
+              faceHeight = detections[0].alignedRect._box._height;
+              cropHeight = 1 / (faceFraction) * faceHeight;
+              cropWidth = cropHeight;
+              startX = centerOfEyesX - cropWidth / 2;
+              startY = centerOfEyesY - cropHeight / 3 - topAddition;
+
+              if (startX < 0) {
+                startX = 0;
+              }
+              if (startY < 0) {
+                startY = 0;
+              }
+
+              if (startX > detections[0].alignedRect._box._x) {
+                startX = detections[0].alignedRect._box._x;
+              }
+              if (startY > detections[0].alignedRect._box._y) {
+                startY = detections[0].alignedRect._box._y;
+              }
+            }
+            await showCroppedPicture(centerOfEyesX, centerOfEyesY, cropWidth, cropHeight, detections, startX, startY);
+            placeholderText.innerHTML = "Best effort crop was used! Face-to-picture ratio used: " + faceFraction.toFixed(2) + ".";
+            warningSymbol.style.display = "none";
+            heartEyesSymbol.style.display = "";
+            spinnerSymbol.style.display = "none";
+            if (allFiles.length > 1) {
+              placeholderText.innerHTML += " (" + counter + "/" + allFiles.length + ")";
+            }
+          } else {
+            placeholderText.innerHTML = "The face-to-picture ratio of the original picture is greater than ratio selected! Please choose another picture, increase face-to-picture ratio, or select best effort crop.";
+            warningSymbol.style.display = "";
+            heartEyesSymbol.style.display = "none";
+            spinnerSymbol.style.display = "none";
+            if (allFiles.length > 1) {
+              placeholderText.innerHTML += " (" + counter + "/" + allFiles.length + ")";
+            }
+            recropButton.classList.add("is-visible");
+          }
+        } else {
+          await showCroppedPicture(centerOfEyesX, centerOfEyesY, cropWidth, cropHeight, detections, startX, startY);
+        }
+      } else if (detections.length > 1) {
+        placeholderText.innerHTML = "multiple faces";
+      } else {
+        placeholderText.innerHTML = "No face detected.";
+        if (sameImageCount == 0)
+          advancedWrapper.style.display = "inline-block";
+        else
+          placeholderText.innerHTML += " Please choose another picture."
+        warningSymbol.style.display = "";
+        heartEyesSymbol.style.display = "none";
+        spinnerSymbol.style.display = "none";
+        if (allFiles.length > 1) {
+          placeholderText.innerHTML += " (" + counter + "/" + allFiles.length + ")";
+        }
       }
+
     }
   }
 
@@ -326,5 +324,22 @@ window.onload = async function() {
     link.download = name + "_cropped";
     link.href = canvas.toDataURL(globalFile.type);
     link.click();
+  }
+
+  async function getDetections(aiTypeParam) {
+    var detections;
+    if (aiTypeParam == "powerful") {
+      await faceapi.loadSsdMobilenetv1Model(MODEL_URL);
+      await faceapi.loadFaceLandmarkModel(MODEL_URL);
+
+      detections = await faceapi.detectAllFaces(image).withFaceLandmarks();
+    } else {
+      await faceapi.loadTinyFaceDetectorModel(MODEL_URL);
+      await faceapi.loadFaceLandmarkTinyModel(MODEL_URL);
+
+      detections = await faceapi.detectAllFaces(image, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks(true);
+    }
+
+    return detections;
   }
 }

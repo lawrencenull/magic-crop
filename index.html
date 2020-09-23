@@ -11,7 +11,7 @@
 
     gtag('config', 'UA-1870460-14');
   </script>
- 
+
   <title>Magic Crop | AI Powered Automatic Headshot Photo Cropper</title>
   <meta name="description" content="A website that uses AI and the rule of thirds to automatically crop inputted
   pictures into perfect square headshots without sending images to any server. It can even batch-crop multiple images!">
@@ -66,8 +66,8 @@
       <div class="dropWrapper" id="js-drop-wrapper">
         <canvas class="canvas" id="js-canvas" width="300" height="300" style="display: none"></canvas>
         <img class="image" id="js-pic-output" style="display:none" alt="input image">
-        <div class="exampleWrapper is-visible" id="js-examples">
-          <img class="exampleImage" src="./assets/example.png" alt="Example Cropping Graphic">
+        <div class="exampleWrapper is-visible" id="js-examples-wrapper">
+          <img class="exampleImage" src="./assets/example.png" alt="Example Cropping Graphic" id="js-examples" style="height: 200px">
         </div>
         <h2 class="descriptionWrapper">
           <div class="description-1">
@@ -91,7 +91,7 @@
           </button>
         </div>
         <div class="mobileText">
-          and it'll be cropped for 
+          and it'll be cropped for
           <div class="headshots">
             headshots!&nbsp
           </div>
@@ -184,7 +184,7 @@
         </div>
       </div>
       <div class="disclaimer" id="js-disclaimer" style="display: none">
-        All the magic happens on your device and is free! Images are never sent to any server.
+        All the magic happens on your device and is free! Images are never sent to any server. Specifically, the TinyFaceDetector and SSDMobileNet models from <a href="https://justadudewhohacks.github.io/face-api.js/docs/index.html#models">face-api.js</a> are used, and Magic Crop’s performance directly depends on those models.
       </div>
     </div>
     <input class="file" type="file" id="js-file" multiple>
